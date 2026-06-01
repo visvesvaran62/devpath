@@ -1,13 +1,16 @@
-import "dotenv/config";
+import dotenv from "dotenv";
 import cors from "cors";
 import express from "express";
 import connectDb from "./config/db.js";
+
+dotenv.config()
 
 // Route imports
 import authRoutes from './routes/authRoutes.js';
 import taskRoutes from './routes/taskRoutes.js';
 import userRoutes from './routes/userRoutes.js';
 import aiRoutes from './routes/aiRoutes.js';
+
 
 const requiredEnvVars = ['JWT_SECRET', 'MONGO_URL'];
 const missingEnvVars = requiredEnvVars.filter((key) => !process.env[key]);
@@ -17,6 +20,8 @@ if (missingEnvVars.length > 0) {
   process.exit(1);
 }
 
+
+
 // Warn about missing Gemini key early so it's obvious in logs
 if (!process.env.GEMINI_API_KEY) {
   console.warn('⚠️  WARNING: GEMINI_API_KEY is not set. AI features will not work.');
@@ -25,6 +30,7 @@ if (!process.env.GEMINI_API_KEY) {
 }
 
 const app = express();
+console.log("API Key:", process.env.GEMINI_API_KEY);
 
 // CORS — allow all origins in dev, restrict in production
 const allowedOrigins = [
