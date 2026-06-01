@@ -35,15 +35,22 @@ const icons = {
 };
 
 const Tasks = () => {
-  const { tasks, toggleTask, deleteTask, addTask, aiInsights, currentPath, searchQuery, isDarkMode, user } = useAppContext();
+  const { tasks, toggleTask, deleteTask, addTask, aiInsights, currentPath, searchQuery, isDarkMode, user, generateAITasks } = useAppContext();
   const [filter, setFilter] = useState('All');
   const [isAdding, setIsAdding] = useState(false);
+  const [isAISuggesting, setIsAISuggesting] = useState(false);
   const [taskForm, setTaskForm] = useState({
     title: '',
     description: '',
     difficulty: 'BEGINNER',
     time: '1h'
   });
+
+  const handleAISuggest = async () => {
+    setIsAISuggesting(true);
+    await generateAITasks();
+    setIsAISuggesting(false);
+  };
 
   const handleAddTask = (e) => {
     if (e) e.preventDefault();
@@ -102,11 +109,40 @@ const Tasks = () => {
           </p>
         </div>
         
-        <div className="w-full md:w-auto">
+        <div className="w-full md:w-auto flex flex-col sm:flex-row gap-3">
+          {/* AI Suggest Tasks Button */}
+          <button
+            id="ai-suggest-tasks-btn"
+            onClick={handleAISuggest}
+            disabled={isAISuggesting}
+            className={`px-6 py-4 rounded-2xl font-bold flex items-center gap-3 transition-all active:scale-95 border w-full sm:w-auto justify-center
+              ${isAISuggesting
+                ? 'opacity-60 cursor-not-allowed bg-purple-50 border-purple-200 text-purple-400'
+                : (isDarkMode
+                    ? 'bg-slate-800 border-slate-700 text-purple-400 hover:bg-purple-900/30 hover:border-purple-600'
+                    : 'bg-purple-50 border-purple-200 text-purple-600 hover:bg-purple-100 hover:border-purple-300 shadow-sm')}
+            `}
+          >
+            {isAISuggesting ? (
+              <>
+                <svg className="w-5 h-5 animate-spin" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                </svg>
+                Generating...
+              </>
+            ) : (
+              <>
+                <icons.Sparkles />
+                AI Suggest Tasks
+              </>
+            )}
+          </button>
+
           {!isAdding ? (
             <button 
               onClick={() => setIsAdding(true)}
-              className="bg-brand text-white px-8 py-4 rounded-2xl font-bold flex items-center gap-3 hover:bg-brand/90 transition-all shadow-xl shadow-brand/20 active:scale-95 group w-full md:w-auto justify-center"
+              className="bg-brand text-white px-8 py-4 rounded-2xl font-bold flex items-center gap-3 hover:bg-brand/90 transition-all shadow-xl shadow-brand/20 active:scale-95 group w-full sm:w-auto justify-center"
             >
               <icons.Plus />
               Add New Milestone

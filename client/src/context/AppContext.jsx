@@ -770,6 +770,32 @@ export const AppContextProvider = ({ children }) => {
     }
   };
 
+  // AI Task Generation
+  const generateAITasks = async () => {
+    try {
+      const completedSteps = roadmapSteps
+        .filter(s => s.completed)
+        .map(s => s.title);
+
+      const proficiency = user?.proficiency || 'Intermediate';
+      const data = await api.generateAITasks(currentPath.title, proficiency, completedSteps);
+
+      if (!data.success || !Array.isArray(data.tasks)) {
+        addNotification('AI Error', 'AI returned an unexpected response. Try again.', 'ERROR');
+        return { success: false };
+      }
+
+      for (const t of data.tasks) {
+        await addTask(t);
+      }
+      addNotification('AI Tasks Added', `${data.tasks.length} tasks generated for your ${currentPath.title} path!`, 'SUCCESS');
+      return { success: true, count: data.tasks.length };
+    } catch (err) {
+      addNotification('AI Error', err.message || 'Failed to generate tasks.', 'ERROR');
+      return { success: false };
+    }
+  };
+
   // Community
   const addPost = async (content, tags = []) => {
     try {
@@ -938,10 +964,10 @@ export const AppContextProvider = ({ children }) => {
   return (
     <AppContext.Provider value={{
       isAuthenticated, user, tasks, messages, searchQuery, activeTab, currentPath, roadmapSteps, PATHS_DATA, initialAuthView,
-      posts: [], notifications, isDarkMode, badges, isLoading, leaderboard, aiInsights, globalNotes,
+      posts, notifications, isDarkMode, badges, isLoading, leaderboard, aiInsights, globalNotes,
       login, logout, registerUser, addTask, toggleTask, deleteTask, sendMessage, setSearchQuery, setUser, setActiveTab, generateRoadmap, setInitialAuthView,
-      addPost: () => {}, addNotification, clearNotifications, deleteNotification, toggleDarkMode, updateProfile, toggleLike: () => {}, addComment: () => {},
-      completeRoadmapStep, addRoadmapStep, deleteRoadmapStep, addTaskFromRoadmap, addGlobalNote, deleteGlobalNote
+      addPost, addNotification, clearNotifications, deleteNotification, toggleDarkMode, updateProfile, toggleLike, addComment,
+      completeRoadmapStep, addRoadmapStep, deleteRoadmapStep, addTaskFromRoadmap, addGlobalNote, deleteGlobalNote, generateAITasks
     }}>
       {children}
     </AppContext.Provider>

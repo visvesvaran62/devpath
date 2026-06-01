@@ -7,8 +7,8 @@ const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
 async function run() {
   try {
-    const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
-    console.log("Model initialized (gemini-2.5-flash). Generating content...");
+    const model = genAI.getGenerativeModel({ model: "gemini-3.5-flash" });
+    console.log("Model initialized (gemini-3.5-flash). Generating content...");
     const result = await model.generateContent("Explain JavaScript in one sentence.");
     console.log("Response text:");
     console.log(result.response.text());

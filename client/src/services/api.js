@@ -151,3 +151,12 @@ export const reviewCode = async (code, userRole, userName) => {
   });
   return handleResponse(response);
 };
+
+export const generateAITasks = async (pathTitle, proficiency, completedSteps = []) => {
+  const response = await fetch(`${API_URL}/api/ai/generate-tasks`, {
+    method: 'POST',
+    headers: { ...getAuthHeader(), 'Content-Type': 'application/json' },
+    body: JSON.stringify({ pathTitle, proficiency, completedSteps }),
+  });
+  return handleResponse(response);
+};
