@@ -1,4 +1,4 @@
-const API_URL = import.meta.env.VITE_API_URL || 'https://devpath-qr8d.onrender.com';
+const API_URL = import.meta.env.VITE_API_URL || 'https://devpath-fbhh.onrender.com';
 
 const getAuthHeader = () => {
   const token = localStorage.getItem('devpath_token');
