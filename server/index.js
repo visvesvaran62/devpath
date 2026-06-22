@@ -1,15 +1,14 @@
-import dotenv from "dotenv";
+import 'dotenv/config';
 import cors from "cors";
 import express from "express";
 import connectDb from "./config/db.js";
-
-dotenv.config()
 
 // Route imports
 import authRoutes from './routes/authRoutes.js';
 import taskRoutes from './routes/taskRoutes.js';
 import userRoutes from './routes/userRoutes.js';
 import aiRoutes from './routes/aiRoutes.js';
+import googleRoute from "./routes/googleRoute.js"
 
 
 const requiredEnvVars = ['JWT_SECRET', 'MONGO_URL'];
@@ -65,6 +64,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/tasks', taskRoutes);
 app.use('/api/user', userRoutes);
 app.use('/api/ai', aiRoutes);
+app.use("/api/auth",googleRoute)
 
 // Base route
 app.get('/', (req, res) => {

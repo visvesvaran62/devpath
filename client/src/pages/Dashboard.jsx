@@ -20,6 +20,7 @@ const icons = {
   )
 };
 
+
 const Dashboard = () => {
   const { user, tasks, isDarkMode, badges, setActiveTab, addGlobalNote, deleteGlobalNote, globalNotes } = useAppContext();
   if (!user) return null;
@@ -27,6 +28,7 @@ const Dashboard = () => {
   const completedTasks = tasks.filter(t => t.completed).length;
   const totalTasks = tasks.length;
   const progressPercent = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
+  console.log(import.meta.env.VITE_GOOGLE_CLIENT_ID);
 
   return (
     <div className={`animate-in fade-in slide-in-from-bottom-4 duration-500 pb-20`}>

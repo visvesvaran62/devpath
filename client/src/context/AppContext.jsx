@@ -645,9 +645,9 @@ export const AppContextProvider = ({ children }) => {
     }
   };
 
-  const login = async (email, password) => {
+  const login = async (email, password, customData = null) => {
     try {
-      const data = await api.loginUser(email, password);
+      const data = customData || await api.loginUser(email, password);
       localStorage.setItem('devpath_token', data.token);
       setUser(data.user);
       setIsAuthenticated(true);

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useAppContext } from '../context/AppContext';
 import { GoogleLogin } from "@react-oauth/google";
+import axios from "axios";
 
 const Auth = () => {
   const { login, registerUser, initialAuthView } = useAppContext();
@@ -18,7 +19,7 @@ const Auth = () => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
     if (!isLogin && !name.trim()) errors.name = 'Name is required';
-    
+
     if (!emailRegex.test(email)) {
       errors.email = 'Invalid email format';
     }
@@ -35,10 +36,37 @@ const Auth = () => {
     return Object.keys(errors).length === 0;
   };
 
+
+  const handleGoogleSuccess = async (credentialResponse) => {
+    try {
+      console.log("Google Success", credentialResponse);
+
+      const credential = credentialResponse?.credential;
+
+      if (!credential) {
+        console.log("No credential received");
+        return;
+      }
+
+      const res = await axios.post(
+        `${import.meta.env.VITE_API_URL}/api/auth/google`,
+        { credential }
+      );
+
+      console.log("Backend Response", res.data);
+      if (res.data.success || res.data.token) {
+        await login(null, null, res.data);
+      }
+    } catch (err) {
+      console.log("Google Auth Error", err);
+      console.log(err.response?.data);
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
-    
+
     if (!validate()) return;
 
     setIsLoading(true);
@@ -167,15 +195,11 @@ const Auth = () => {
               {isLoading ? 'Processing...' : isLogin ? 'Sign In' : 'Create Account'}
             </button>
             <div className="mt-4">
-    <GoogleLogin
-    onSuccess={(response) => {
-      console.log(response);
-    }}
-    onError={() => {
-      console.log("Login Failed");
-    }}
-  />
-</div>
+              <GoogleLogin
+                onSuccess={handleGoogleSuccess}
+                onError={() => console.log("Login Failed")}
+              />
+            </div>
           </form>
 
           <p className="text-center text-sm font-medium text-slate-400 mt-8">
