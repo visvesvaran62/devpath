@@ -13,7 +13,7 @@ const handleResponse = async (response) => {
   return data;
 };
 
-// Auth
+
 export const registerUser = async (name, email, password) => {
   const response = await fetch(`${API_URL}/api/auth/register`, {
     method: 'POST',

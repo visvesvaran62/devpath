@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useAppContext } from '../context/AppContext';
+import { GoogleLogin } from "@react-oauth/google";
 
 const Auth = () => {
   const { login, registerUser, initialAuthView } = useAppContext();
@@ -165,6 +166,16 @@ const Auth = () => {
             >
               {isLoading ? 'Processing...' : isLogin ? 'Sign In' : 'Create Account'}
             </button>
+            <div className="mt-4">
+    <GoogleLogin
+    onSuccess={(response) => {
+      console.log(response);
+    }}
+    onError={() => {
+      console.log("Login Failed");
+    }}
+  />
+</div>
           </form>
 
           <p className="text-center text-sm font-medium text-slate-400 mt-8">
